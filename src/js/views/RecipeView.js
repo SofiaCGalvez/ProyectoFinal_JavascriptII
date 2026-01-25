@@ -1,4 +1,4 @@
-import {recipeContainer} from "./js/controller.js";
+import {recipeContainer} from "../controller.js";
 
 class RecipeView{
 
