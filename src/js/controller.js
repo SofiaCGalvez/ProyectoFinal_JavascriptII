@@ -1,5 +1,12 @@
-import RecipeView from './views/RecipeView.js';
+
+import recipeView from './views/RecipeView.js';
+import searchView from './views/searchViews.js';
 import * as model from "./model.js";
+
+
+
+console.log('CONTROLLER CARGADO');
+
 
 const recipeContainer = document.querySelector('.recipe');
 
@@ -16,11 +23,11 @@ const timeout = function (s) {
 ///////////////////////////////////////
 
 // 👇 AQUÍ VA LO DEL EJERCICIO
-async function showRecipe() {
+const controlRecipes = async function () {
   try {
 
-    const id =window.location.hash.slice();
-    console.log(id);
+    const id =window.location.hash.slice(1);
+    //console.log(id);
 
     // Validación
     if (!id) return;
@@ -36,22 +43,55 @@ async function showRecipe() {
     
     // Renderizar receta (VIEW)
     recipeView.render(model.state.recipe);
+
+    console.log('Recipe:', model.state.recipe);
     // imprimir recipe
-    console.log(recipe);
+    //console.log(recipe);
 
 
   } catch (error) {
-    alert(error);
+    recipeView.renderError();
   }
 }
 
-/*showRecipe();*/
+
+//controlRecipes();
 
 
 /*window.addEventListener("hashchange", showRecipe);
 window.addEventListener("load", showRecipe); */
 
-["hashchange","load"].forEach(ev=>{
-    window.addEventListener(ev, showRecipe);
-});
+/*const testSearch = async function () {
+  try {
+    await model.loadSearchResults('pizza');
+    console.log(model.state.search);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
+testSearch(); */
+
+const controlSearchResults = async function () {
+  try {
+    const query = searchView.getQuery(); // por ahora fijo para probar
+
+    if (!query) return;
+
+    await model.loadSearchResults(query);
+
+    console.log(model.state.search.results);
+
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+//controlSearchResults();
+
+const init = function () {
+  recipeView.addHandlerRender(controlRecipes);
+  searchView.addHandlerSearch(controlSearchResults);
+};
+
+init();
