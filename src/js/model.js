@@ -1,4 +1,5 @@
 import { API_URL } from "./config.js";
+import {API_URL, RES_PER_PAGE} from './config.js';
 import { getJSON } from "./helpers.js";
 
 console.log('MODEL CARGADO');
@@ -7,7 +8,9 @@ export const state= {  //state guarda la receta actual
     recipe: {},
     search: {
     query: '',
-    results: []
+    results: [],
+    page: 1,
+    resultsPerPage: RES_PER_PAGE,
   }
 };
 
@@ -62,4 +65,18 @@ export const loadSearchResults = async function (query) {
     console.log(`${err} 💥💥💥`);
     throw err;
   }
+};
+
+export const getSearchResultsPage = function (
+  page = state.search.page
+) {
+  // a) actualizar página actual
+  state.search.page = page;
+
+  // b) calcular índices
+  const start = (page - 1) * state.search.resultsPerPage;
+  const end = page * state.search.resultsPerPage;
+
+  // c) retornar solo los resultados de esa página
+  return state.search.results.slice(start, end);
 };
