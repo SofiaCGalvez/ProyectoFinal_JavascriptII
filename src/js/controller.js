@@ -1,10 +1,11 @@
 
 import recipeView from './views/RecipeView.js';
 import searchView from './views/searchViews.js';
+import resultsView from './views/ResultView.js';
 import * as model from "./model.js";
 
 
-
+console.log(resultsView);
 console.log('CONTROLLER CARGADO');
 
 
@@ -26,6 +27,7 @@ const timeout = function (s) {
 const controlRecipes = async function () {
   try {
 
+    console.log('HASH:', window.location.hash);
     const id =window.location.hash.slice(1);
     //console.log(id);
 
@@ -37,6 +39,7 @@ const controlRecipes = async function () {
 
       // ii. llamar loadRecipe con await
     await model.loadRecipe(id);
+    console.log('RECIPE:', model.state.recipe);
 
     // iii. desestructurar recipe desde state
     //const { recipe } = model.state;
@@ -78,16 +81,21 @@ const controlSearchResults = async function () {
 
     if (!query) return;
 
+    //Mostrar spinner
+    resultsView.renderSpinner();
+
     await model.loadSearchResults(query);
 
-    console.log(model.state.search.results);
+    console.log('RESULTADOS:', model.state.search.results);
+
+    resultsView.render(model.state.search.results);
 
   } catch (err) {
     console.log(err);
   }
 };
 
-//controlSearchResults();
+controlSearchResults();
 
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
